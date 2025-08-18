@@ -1,23 +1,30 @@
 pub fn self_runas() -> anyhow::Result<()> {
-    match runas::Command::new(std::env::current_exe()?)
-        .args(std::env::args().skip(1).collect::<Vec<_>>().as_slice())
-        .status()
+    let mut binding = runas::Command::new(std::env::current_exe()?);
+    let mut cmd = binding
+        .args(std::env::args().skip(1).collect::<Vec<_>>().as_slice());
+
+
+    
+    #[cfg(target_os = "windows")]
+    let show_flag = true;
+    #[cfg(not(target_os = "windows"))]
+    let show_flag = false;
+    cmd = cmd.show(show_flag);
+    
+    match cmd.status()
     {
-        Ok(_) => {
-            println!("shutting down");
-            std::process::exit(0);
-        },
+        Ok(_) => Ok(()),
         Err(_) => anyhow::bail!("failed"),
     }
 }
 
 #[cfg(windows)]
 pub fn is_elevated() -> bool {
+    use winapi::shared::minwindef::DWORD;
+    use winapi::um::handleapi::CloseHandle;
     use winapi::um::processthreadsapi::{GetCurrentProcess, OpenProcessToken};
     use winapi::um::securitybaseapi::GetTokenInformation;
-    use winapi::um::handleapi::CloseHandle;
-    use winapi::um::winnt::{TokenElevation, TOKEN_ELEVATION, TOKEN_QUERY};
-    use winapi::shared::minwindef::DWORD;
+    use winapi::um::winnt::{TOKEN_ELEVATION, TOKEN_QUERY, TokenElevation};
 
     unsafe {
         let process = GetCurrentProcess();

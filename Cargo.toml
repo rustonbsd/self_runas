@@ -6,7 +6,7 @@ edition = "2024"
 [dependencies]
 anyhow = "1"
 nix = { version = "0.30", features = ["user"] }
-runas = "1.2"
+runas = { git="https://github.com/rustonbsd/rust-runas", branch = "master" }
 
 #[target.'cfg(windows)'.dependencies]
 winapi = { version = "*", features = ["processthreadsapi", "securitybaseapi", "winnt", "handleapi"] }

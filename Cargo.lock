@@ -90,8 +90,7 @@ checksum = "42f5e15c9953c5e4ccceeb2e7382a716482c34515315f7b03532b8b4e8393d2d"
 [[package]]
 name = "runas"
 version = "1.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b96d6b6c505282b007a9b009f2aa38b2fd0359b81a0430ceacc60f69ade4c6a0"
+source = "git+https://github.com/rustonbsd/rust-runas?branch=master#1138d1ecf0d2c35f3e548f00a05868ae71ccce27"
 dependencies = [
  "libc",
  "security-framework-sys",

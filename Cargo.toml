@@ -1,0 +1,12 @@
+[package]
+name = "self_runas"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+anyhow = "1"
+nix = { version = "0.30", features = ["user"] }
+runas = "1.2"
+
+#[target.'cfg(windows)'.dependencies]
+winapi = { version = "*", features = ["processthreadsapi", "securitybaseapi", "winnt", "handleapi"] }

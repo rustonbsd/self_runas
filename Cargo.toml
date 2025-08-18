@@ -1,12 +1,18 @@
 [package]
 name = "self_runas"
+description = "run this application with sudo/as admin"
+license = "MIT"
+authors = ["Zacharias Boehler <rustonbsd@mailfence.com>"]
+repository = "https://github.com/rustonbsd/self_runas"
+readme = "README.md"
 version = "0.1.0"
 edition = "2024"
+
 
 [dependencies]
 anyhow = "1"
 nix = { version = "0.30", features = ["user"] }
 runas = { git="https://github.com/rustonbsd/rust-runas", branch = "master" }
 
-#[target.'cfg(windows)'.dependencies]
+[target.'cfg(windows)'.dependencies]
 winapi = { version = "*", features = ["processthreadsapi", "securitybaseapi", "winnt", "handleapi"] }

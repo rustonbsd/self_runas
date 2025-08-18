@@ -88,9 +88,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "42f5e15c9953c5e4ccceeb2e7382a716482c34515315f7b03532b8b4e8393d2d"
 
 [[package]]
-name = "runas"
+name = "runas-with-inherited-cmd"
 version = "1.2.0"
-source = "git+https://github.com/rustonbsd/rust-runas?branch=master#1138d1ecf0d2c35f3e548f00a05868ae71ccce27"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a8ddf59c412be7f47462d0d06aec97c54dc16933e0c8d30df3a2a7950d1f0993"
 dependencies = [
  "libc",
  "security-framework-sys",
@@ -122,12 +123,12 @@ dependencies = [
 ]
 
 [[package]]
-name = "self_runas"
+name = "self-runas"
 version = "0.1.0"
 dependencies = [
  "anyhow",
  "nix",
- "runas",
+ "runas-with-inherited-cmd",
  "winapi",
 ]
 

@@ -1,4 +1,4 @@
-pub fn self_runas() -> anyhow::Result<()> {
+pub fn admin() -> anyhow::Result<()> {
     let mut binding = runas::Command::new(std::env::current_exe()?);
     let mut cmd = binding
         .args(std::env::args().skip(1).collect::<Vec<_>>().as_slice());

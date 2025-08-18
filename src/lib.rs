@@ -1,3 +1,5 @@
+use runas_with_inherited_cmd as runas;
+
 pub fn admin() -> anyhow::Result<()> {
     let mut binding = runas::Command::new(std::env::current_exe()?);
     let mut cmd = binding

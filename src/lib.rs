@@ -1,23 +1,35 @@
 use runas_with_inherited_cmd as runas;
+use std::ffi::OsString;
 
-pub fn admin() -> anyhow::Result<()> {
-    let mut binding = runas::Command::new(std::env::current_exe()?);
-    let mut cmd = binding
-        .args(std::env::args().skip(1).collect::<Vec<_>>().as_slice());
+#[derive(Debug, thiserror::Error)]
+pub enum Error {
+    #[error("failed to get current exe path")]
+    CurrentPath(#[source] std::io::Error),
 
+    #[error("Run as root, could not elevate privileges automatically: ")]
+    ExecAsAdmin(#[source] std::io::Error),
+}
 
-    
-    #[cfg(target_os = "windows")]
-    let show_flag = true;
-    #[cfg(not(target_os = "windows"))]
-    let show_flag = false;
-    cmd = cmd.show(show_flag);
-    
-    match cmd.status()
-    {
-        Ok(_) => Ok(()),
-        Err(_) => anyhow::bail!("failed"),
+pub fn admin() -> Result<(), Error> {
+    if is_elevated() {
+        return Ok(());
     }
+
+    let exe = std::env::current_exe().map_err(Error::CurrentPath)?;
+    let args: Vec<OsString> = std::env::args_os().skip(1).collect();
+
+    let status = runas::Command::new(exe)
+        .args(&args)
+        .force_prompt(false)
+        .show(cfg!(windows))
+        .status()
+        .map_err(Error::ExecAsAdmin)?;
+    std::process::exit(status.code().unwrap_or(1));
+}
+
+#[cfg(unix)]
+pub fn is_elevated() -> bool {
+    nix::unistd::geteuid().is_root()
 }
 
 #[cfg(windows)]
@@ -51,7 +63,7 @@ pub fn is_elevated() -> bool {
     }
 }
 
-#[cfg(unix)]
+#[cfg(not(any(unix, windows)))]
 pub fn is_elevated() -> bool {
-    nix::unistd::geteuid().is_root()
+    false
 }
